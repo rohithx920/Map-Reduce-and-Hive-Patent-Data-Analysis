@@ -1,0 +1,113 @@
+hive> CREATE TABLE IF NOT EXISTS Group5_PatentData (doc_number INT, invention_title STRING, classification_national STRING, year INT, org_name STRING, word1 STRING, word2 STRING, word3 STRING) ROW FORMAT DELIMITED FIELDS TERMINATED BY ',';
+OK
+Time taken: 1.599 seconds
+
+hive> describe group5_patentdata;
+OK
+doc_number              int
+invention_title         string
+classification_national string
+year                    int
+org_name                string
+word1                   string
+word2                   string
+word3                   string
+Time taken: 0.095 seconds, Fetched: 8 row(s)
+hive>
+hive> LOAD DATA INPATH '/user/lsridhar/projectPart2_input/patentData.txt' INTO TABLE Group5_PatentData;
+Loading data to table default.group5_patentdata
+chgrp: changing ownership of 'hdfs://dsba/user/hive/warehouse/group5_patentdata/patentData.txt': User does not belong to hive
+Table default.group5_patentdata stats: [numFiles=1, totalSize=303041998]
+OK
+Time taken: 0.435 seconds
+hive> INSERT OVERWRITE DIRECTORY 'patentdata_output/query1' ROW FORMAT DELIMITED FIELDS TERMINATED BY ',' STORED AS TEXTFILE SELECT * FROM Group5_PatentData where year = 2015;
+Query ID = lsridhar_20161021125757_1cbfe091-0d87-49ff-8bad-15a4f989e632
+Total jobs = 3
+Launching Job 1 out of 3
+Number of reduce tasks is set to 0 since there's no reduce operator
+Starting Job = job_1470409205513_1014, Tracking URL = http://mba-hm1.uncc.edu:8088/proxy/application_1470409205513_1014/
+Kill Command = /usr/lib/hadoop/bin/hadoop job  -kill job_1470409205513_1014
+Hadoop job information for Stage-1: number of mappers: 3; number of reducers: 0
+2016-10-21 12:57:52,413 Stage-1 map = 0%,  reduce = 0%
+2016-10-21 12:57:59,616 Stage-1 map = 67%,  reduce = 0%, Cumulative CPU 10.12 sec
+2016-10-21 12:58:00,645 Stage-1 map = 100%,  reduce = 0%, Cumulative CPU 15.72 sec
+MapReduce Total cumulative CPU time: 15 seconds 720 msec
+Ended Job = job_1470409205513_1014
+Stage-3 is filtered out by condition resolver.
+Stage-2 is selected by condition resolver.
+Stage-4 is filtered out by condition resolver.
+Launching Job 3 out of 3
+Number of reduce tasks is set to 0 since there's no reduce operator
+Starting Job = job_1470409205513_1015, Tracking URL = http://mba-hm1.uncc.edu:8088/proxy/application_1470409205513_1015/
+Kill Command = /usr/lib/hadoop/bin/hadoop job  -kill job_1470409205513_1015
+Hadoop job information for Stage-2: number of mappers: 1; number of reducers: 0
+2016-10-21 12:58:11,947 Stage-2 map = 0%,  reduce = 0%
+2016-10-21 12:58:20,124 Stage-2 map = 100%,  reduce = 0%, Cumulative CPU 4.1 sec
+MapReduce Total cumulative CPU time: 4 seconds 100 msec
+Ended Job = job_1470409205513_1015
+Moving data to: patentdata_output/query1
+MapReduce Jobs Launched:
+Stage-Stage-1: Map: 3   Cumulative CPU: 15.72 sec   HDFS Read: 303184647 HDFS Write: 32354382 SUCCESS
+Stage-Stage-2: Map: 1   Cumulative CPU: 4.1 sec   HDFS Read: 32356435 HDFS Write: 32354382 SUCCESS
+Total MapReduce CPU Time Spent: 19 seconds 820 msec
+OK
+Time taken: 36.91 seconds
+hive> INSERT OVERWRITE DIRECTORY 'patentdata_output/query2' ROW FORMAT DELIMITED FIELDS TERMINATED BY ',' STORED AS TEXTFILE SELECT * FROM Group5_PatentData WHERE LOWER(org_name) LIKE '%apple %';
+Query ID = lsridhar_20161021125959_8d12ede8-ebd0-406a-ad77-3c1a7a577ad0
+Total jobs = 3
+Launching Job 1 out of 3
+Number of reduce tasks is set to 0 since there's no reduce operator
+Starting Job = job_1470409205513_1016, Tracking URL = http://mba-hm1.uncc.edu:8088/proxy/application_1470409205513_1016/
+Kill Command = /usr/lib/hadoop/bin/hadoop job  -kill job_1470409205513_1016
+Hadoop job information for Stage-1: number of mappers: 3; number of reducers: 0
+2016-10-21 12:59:50,514 Stage-1 map = 0%,  reduce = 0%
+2016-10-21 12:59:58,681 Stage-1 map = 67%,  reduce = 0%, Cumulative CPU 13.88 sec
+2016-10-21 12:59:59,702 Stage-1 map = 100%,  reduce = 0%, Cumulative CPU 21.89 sec
+MapReduce Total cumulative CPU time: 21 seconds 890 msec
+Ended Job = job_1470409205513_1016
+Stage-3 is filtered out by condition resolver.
+Stage-2 is selected by condition resolver.
+Stage-4 is filtered out by condition resolver.
+Launching Job 3 out of 3
+Number of reduce tasks is set to 0 since there's no reduce operator
+Starting Job = job_1470409205513_1017, Tracking URL = http://mba-hm1.uncc.edu:8088/proxy/application_1470409205513_1017/
+Kill Command = /usr/lib/hadoop/bin/hadoop job  -kill job_1470409205513_1017
+Hadoop job information for Stage-2: number of mappers: 1; number of reducers: 0
+2016-10-21 13:00:11,905 Stage-2 map = 0%,  reduce = 0%
+2016-10-21 13:00:19,049 Stage-2 map = 100%,  reduce = 0%, Cumulative CPU 2.2 sec
+MapReduce Total cumulative CPU time: 2 seconds 200 msec
+Ended Job = job_1470409205513_1017
+Moving data to: patentdata_output/query2
+MapReduce Jobs Launched:
+Stage-Stage-1: Map: 3   Cumulative CPU: 21.89 sec   HDFS Read: 303184830 HDFS Write: 947153 SUCCESS
+Stage-Stage-2: Map: 1   Cumulative CPU: 2.2 sec   HDFS Read: 949201 HDFS Write: 947153 SUCCESS
+Total MapReduce CPU Time Spent: 24 seconds 90 msec
+OK
+Time taken: 35.943 seconds
+hive> INSERT OVERWRITE DIRECTORY 'patentdata_output/query3' ROW FORMAT DELIMITED FIELDS TERMINATED BY ',' STORED AS TEXTFILE SELECT COUNT(*) FROM Group5_PatentData WHERE LOWER(classification_national) LIKE '%electronic%' AND (((LOWER(word1) LIKE '%samsung%' OR LOWER(word1) LIKE '%apple%') AND (LOWER(word2) LIKE '%samsung%' OR LOWER(word2) LIKE '%apple%')) OR ((LOWER(word2) LIKE '%samsung%' OR LOWER(word2) LIKE '%apple%') AND (LOWER(word3) LIKE '%samsung%' OR LOWER(word3) LIKE '%apple%')) OR ((LOWER(word1) LIKE '%samsung%' OR LOWER(word1) LIKE '%apple%') AND (LOWER(word3) LIKE '%samsung%' OR LOWER(word3) LIKE '%apple%')));
+Query ID = lsridhar_20161021130101_d75e4067-e32b-47d8-90cc-bb02f4f0b215
+Total jobs = 1
+Launching Job 1 out of 1
+Number of reduce tasks determined at compile time: 1
+In order to change the average load for a reducer (in bytes):
+  set hive.exec.reducers.bytes.per.reducer=<number>
+In order to limit the maximum number of reducers:
+  set hive.exec.reducers.max=<number>
+In order to set a constant number of reducers:
+  set mapreduce.job.reduces=<number>
+Starting Job = job_1470409205513_1018, Tracking URL = http://mba-hm1.uncc.edu:8088/proxy/application_1470409205513_1018/
+Kill Command = /usr/lib/hadoop/bin/hadoop job  -kill job_1470409205513_1018
+Hadoop job information for Stage-1: number of mappers: 3; number of reducers: 1
+2016-10-21 13:02:03,300 Stage-1 map = 0%,  reduce = 0%
+2016-10-21 13:02:10,444 Stage-1 map = 33%,  reduce = 0%, Cumulative CPU 4.5 sec
+2016-10-21 13:02:11,464 Stage-1 map = 100%,  reduce = 0%, Cumulative CPU 15.67 sec
+2016-10-21 13:02:16,564 Stage-1 map = 100%,  reduce = 100%, Cumulative CPU 17.99 sec
+MapReduce Total cumulative CPU time: 17 seconds 990 msec
+Ended Job = job_1470409205513_1018
+Moving data to: patentdata_output/query3
+MapReduce Jobs Launched:
+Stage-Stage-1: Map: 3  Reduce: 1   Cumulative CPU: 17.99 sec   HDFS Read: 303193624 HDFS Write: 2 SUCCESS
+Total MapReduce CPU Time Spent: 17 seconds 990 msec
+OK
+Time taken: 21.665 seconds
+hive>
